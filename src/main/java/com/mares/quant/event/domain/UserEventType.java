@@ -1,4 +1,4 @@
-package com.mares.quant.event;
+package com.mares.quant.event.domain;
 
 public enum UserEventType {
 

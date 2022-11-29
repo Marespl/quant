@@ -1,6 +1,6 @@
-package com.mares.quant.event;
+package com.mares.quant.event.domain;
 
-public class Event {
+public class EventDto {
 
     private long timestamp;
     private String ip;

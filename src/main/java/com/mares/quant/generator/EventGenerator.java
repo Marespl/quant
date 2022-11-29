@@ -1,10 +1,10 @@
 package com.mares.quant.generator;
 
 import com.google.gson.Gson;
-import com.mares.quant.event.Event;
-import com.mares.quant.event.EventConsumer;
-import com.mares.quant.event.UserEvent;
-import com.mares.quant.event.UserEventType;
+import com.mares.quant.event.domain.EventDto;
+import com.mares.quant.util.EventConsumer;
+import com.mares.quant.event.domain.UserEventDto;
+import com.mares.quant.event.domain.UserEventType;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -36,10 +36,6 @@ public class EventGenerator {
     }
 
     public synchronized void start(EventConsumer eventConsumer) {
-        if (running) {
-            throw new IllegalStateException("Already running...");
-        }
-
         resetCounters();
 
         running = true;
@@ -52,17 +48,17 @@ public class EventGenerator {
             }
             String userId = UUID.randomUUID().toString();
             String ip = ipSeeder.get();
-            UserEvent userStartEvent = generateUserEvent(userId, ip, UserEventType.START);
+            UserEventDto userStartEvent = generateUserEvent(userId, ip, UserEventType.START);
             eventConsumer.receiveUserEvent(gson.toJson(userStartEvent));
 
             int randomInt = random.nextInt(1000);
 
             for (int i = 0; i < randomInt; i++) {
-                Event event = generateEvent(ip);
-                eventConsumer.receiveEvent(gson.toJson(event));
+                EventDto eventDto = generateEvent(ip);
+                eventConsumer.receiveEvent(gson.toJson(eventDto));
                 eventsCounter++;
             }
-            UserEvent userStopEvent = generateUserEvent(userId, ip, UserEventType.STOP);
+            UserEventDto userStopEvent = generateUserEvent(userId, ip, UserEventType.STOP);
             eventConsumer.receiveUserEvent(gson.toJson(userStopEvent));
         }
     }
@@ -81,21 +77,21 @@ public class EventGenerator {
         eventsCounter = 0;
     }
 
-    private Event generateEvent(String ip) {
-        Event event = new Event();
-        event.setIp(ip);
-        event.setTimestamp(System.currentTimeMillis());
-        event.setAppName(appNameSeeder.get());
+    private EventDto generateEvent(String ip) {
+        EventDto eventDto = new EventDto();
+        eventDto.setIp(ip);
+        eventDto.setTimestamp(System.currentTimeMillis());
+        eventDto.setAppName(appNameSeeder.get());
 
-        return event;
+        return eventDto;
     }
 
-    private UserEvent generateUserEvent(String userId, String ip, UserEventType userEventType) {
-        UserEvent userEvent = new UserEvent();
-        userEvent.setEventType(userEventType);
-        userEvent.setTimestamp(System.currentTimeMillis());
-        userEvent.setUserId(userId);
-        userEvent.setIp(ip);
-        return userEvent;
+    private UserEventDto generateUserEvent(String userId, String ip, UserEventType userEventType) {
+        UserEventDto userEventDto = new UserEventDto();
+        userEventDto.setEventType(userEventType);
+        userEventDto.setTimestamp(System.currentTimeMillis());
+        userEventDto.setUserId(userId);
+        userEventDto.setIp(ip);
+        return userEventDto;
     }
 }

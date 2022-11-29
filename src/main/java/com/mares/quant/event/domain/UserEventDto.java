@@ -1,12 +1,11 @@
-package com.mares.quant.event;
+package com.mares.quant.event.domain;
 
-public class UserEvent {
+public class UserEventDto {
 
     private long timestamp;
     private String ip;
     private UserEventType eventType;
     private String userId;
-
 
     public long getTimestamp() {
         return timestamp;
